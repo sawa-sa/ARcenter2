@@ -1,32 +1,22 @@
+// CSVファイルを読み込む関数
+async function loadCSVData(url) {
+  const response = await fetch(url);
+  const text = await response.text();
+  const rows = text.split('\n').slice(1); // ヘッダーを除去
 
-// テキスト形式のCSVデータをオブジェクト形式に変換する関数
-function parseCSV(csvText) {
-  const rows = csvText.split('\n'); // 行ごとに分割
   const data = [];
-
-  // ヘッダー行を除く（最初の行をスキップ）
-  rows.slice(1).forEach(row => {
+  rows.forEach(row => {
     const cols = row.split(',');
-
-    // 少なくとも3列あり、数値が含まれている場合に処理
     if (cols.length >= 3) {
-      const x = parseFloat(cols[0].trim());
-      const y = parseFloat(cols[1].trim());
-      const z = parseFloat(cols[2].trim());
-
-      // x, y, z のいずれかが無効な値であればスキップ
-      if (!isNaN(x) && !isNaN(y) && !isNaN(z)) {
-        data.push({ x, y, z });
-      }
+      data.push({
+        x: parseFloat(cols[0]),
+        y: parseFloat(cols[1]),
+        z: parseFloat(cols[2])
+      });
     }
   });
-
   return data;
 }
-
-
-
-
 
 // データを0〜1の範囲に正規化する関数
 function normalizeData(data) {
@@ -58,4 +48,4 @@ function calculateMinMax(data) {
   return { min, max };
 }
 
-export {parseCSV, normalizeData, calculateMinMax };
+export { loadCSVData, normalizeData, calculateMinMax };
